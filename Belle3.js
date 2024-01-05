@@ -2,9 +2,9 @@ const sheetId = '1q3M1Etd73E7s3HaH_SZyEwBAZUCbAY_nhjmB02WDoTc';
 const Script = 'https://script.google.com/macros/s/AKfycbwFNrQ8YxErl0F_6sStT7ds4KjPWC4tunzANn6FCJr38idod5GYfYa13WtAbmOfDetudw/exec'
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
 let query = encodeURIComponent('Select *');
-let Users="Users";
-let UrlUsers = `${base}&sheet=${Users}&tq=${query}`;
-let DataUsers = [];
+// let Users="Users";
+// let UrlUsers = `${base}&sheet=${Users}&tq=${query}`;
+// let DataUsers = [];
 let Data0="Data0";
 let UrlData0 = `${base}&sheet=${Data0}&tq=${query}`;
 let DataData0 = [];
@@ -18,26 +18,25 @@ let DataSetting = [];
 document.addEventListener('DOMContentLoaded', init)
 function init() {
   ConvertMode();
-  LoadUsers();
+  // LoadUsers();
   if (typeof(Storage) !== "undefined") {
-    if( localStorage.getItem("PassWord")!=null){
-      document.getElementById("User_PassWord").value=localStorage.getItem("PassWord");
-    }
-    if( localStorage.getItem("User_Index")!=null){
+    // if( localStorage.getItem("PassWord")!=null){
+    //   document.getElementById("User_PassWord").value=localStorage.getItem("PassWord");
+    // }
+    // if( localStorage.getItem("User_Index")!=null){
       ShowSelectForm("Main");
       let Loading=document.getElementById("LoadingMain");
       Loading.className="fa fa-refresh fa-spin"
-      document.getElementById("Myusername").value=localStorage.getItem("User_Name");
+      // document.getElementById("Myusername").value=localStorage.getItem("User_Name");
        const LoadTime=setTimeout(function(){
         Loading.className="fa fa-refresh" ;
         clearTimeout(LoadTime);
        },3000);
-    }
   }
 }
 
 function ShowSelectForm(ActiveForm){
-  document.getElementById("loginPage").style.display="none";
+  // document.getElementById("loginPage").style.display="none";
   document.getElementById("Main").style.display="none";
   document.getElementById("MethodWi").style.display="none";
   document.getElementById("MethodBrowser").style.display="none";
@@ -78,109 +77,110 @@ function ShowMethodWi(){
 }
 
 
-function ShowSalesBrowser(){
-  ShowSelectForm("SalesBrowser");
-  LoadSalesToTable();
-}
+
 
 function ShowSalesWi(){
   let Loading=document.getElementById("invoicedollar");
+  let Loading1=document.getElementById("BackMain");
   Loading.className="fa fa-refresh fa-spin";
+  Loading1.className="fa fa-refresh fa-spin";
   LoadMethod();
   LoadSetting();
+  LoadData0();
   const myTimeout = setTimeout(function(){ 
     Loading.className="fas fa-file-invoice-dollar";
+    Loading1.className="fa fa-mail-reply";
     ClearItemSa();
     ShowSelectForm("SalesWi");
     clearTimeout(myTimeout);
-}, 2000);
+}, 2500);
 }
 
-function SignOutUser(){
-  localStorage.removeItem("User_Index");
-  localStorage.removeItem("User_Name");
-  document.getElementById('Myusername').value="";
-  ShowSelectForm("loginPage");
-}
+// function SignOutUser(){
+//   localStorage.removeItem("User_Index");
+//   localStorage.removeItem("User_Name");
+//   document.getElementById('Myusername').value="";
+//   ShowSelectForm("loginPage");
+// }
 
 function GoToMain(){
     ShowSelectForm("Main");
 }
 
 // ***************Sign On**************
-function LoadUsers(){
-  DataUsers=[];
-  fetch(UrlUsers)
-  .then(res => res.text())
-  .then(rep => {
-      const jsonData = JSON.parse(rep.substring(47).slice(0, -2));
-      const colzUser = [];
-      jsonData.table.cols.forEach((heading) => {
-          if (heading.label) {
-              let columnUser = heading.label;
-              colzUser.push(columnUser);
-          }
-      })
-      jsonData.table.rows.forEach((rowData) => {
-          const rowUser = {};
-          colzUser.forEach((ele, ind) => {
-              rowUser[ele] = (rowData.c[ind] != null) ? rowData.c[ind].v : '';
-          })
-          DataUsers.push(rowUser);
-      })
-  })
-}
+// function LoadUsers(){
+//   DataUsers=[];
+//   fetch(UrlUsers)
+//   .then(res => res.text())
+//   .then(rep => {
+//       const jsonData = JSON.parse(rep.substring(47).slice(0, -2));
+//       const colzUser = [];
+//       jsonData.table.cols.forEach((heading) => {
+//           if (heading.label) {
+//               let columnUser = heading.label;
+//               colzUser.push(columnUser);
+//           }
+//       })
+//       jsonData.table.rows.forEach((rowData) => {
+//           const rowUser = {};
+//           colzUser.forEach((ele, ind) => {
+//               rowUser[ele] = (rowData.c[ind] != null) ? rowData.c[ind].v : '';
+//           })
+//           DataUsers.push(rowUser);
+//       })
+//   })
+// }
 
-function IsfoundUser(TPassWord){
-  let error_User_ID= document.getElementById("error_User_ID");
-    for (let index = 0; index < DataUsers.length; index++) {
-      if(TPassWord==DataUsers[index].PassWord){
-        localStorage.setItem("User_Index", index);
-        return true;
-      }
-    }
-      error_User_ID.className="fa fa-warning";
-      return false ;
-  }
+// function IsfoundUser(TPassWord){
+//   let error_User_ID= document.getElementById("error_User_ID");
+//     for (let index = 0; index < DataUsers.length; index++) {
+//       if(TPassWord==DataUsers[index].PassWord){
+//         localStorage.setItem("User_Index", index);
+//         return true;
+//       }
+//     }
+//       error_User_ID.className="fa fa-warning";
+//       return false ;
+//   }
 
-  function foundIndex(TPassWord){
-      for (let index = 0; index < DataUsers.length; index++) {
-        if(TPassWord==DataUsers[index].PassWord){
-          return index
-        }
-      }
-      return -1
-    }
+//   function foundIndex(TPassWord){
+//       for (let index = 0; index < DataUsers.length; index++) {
+//         if(TPassWord==DataUsers[index].PassWord){
+//           return index
+//         }
+//       }
+//       return -1
+//     }
   
-function Istrue(TPassWord){
-  let error_User_ID= document.getElementById("error_User_ID");
-  if(TPassWord===""){ error_User_ID.className="fa fa-warning"; return false;}else{ error_User_ID.className="" }
-  if(IsfoundUser(TPassWord)===false){return false}else{error_User_ID.className=""}
-  return true;
-}
+// function Istrue(TPassWord){
+//   let error_User_ID= document.getElementById("error_User_ID");
+//   if(TPassWord===""){ error_User_ID.className="fa fa-warning"; return false;}else{ error_User_ID.className="" }
+//   if(IsfoundUser(TPassWord)===false){return false}else{error_User_ID.className=""}
+//   return true;
+// }
 
-function Sign_In(){
-  let User_PassWord= document.getElementById("User_PassWord");
-  if (Istrue(User_PassWord.value)===true){
-    let User_Index = localStorage.getItem("User_Index");
-    localStorage.setItem("User_Name", DataUsers[User_Index].UserName);
-    localStorage.setItem("PassWord",DataUsers[User_Index].PassWord);
-    ShowSelectForm("Main");
-    location.reload();
-  }
-}
+// function Sign_In(){
+//   let User_PassWord= document.getElementById("User_PassWord");
+//   if (Istrue(User_PassWord.value)===true){
+//     let User_Index = localStorage.getItem("User_Index");
+//     localStorage.setItem("User_Name", DataUsers[User_Index].UserName);
+//     localStorage.setItem("PassWord",DataUsers[User_Index].PassWord);
+//     ShowSelectForm("Main");
+//     location.reload();
+//   }
+// }
 
-function ShowPassword(){
-  let User_PassWord= document.getElementById("User_PassWord");
-  let Eye_Password= document.getElementById("Eye_Password");
-  if (Eye_Password.className=="fa fa-eye"){
-    User_PassWord.type="text";
-    Eye_Password.className="fa fa-eye-slash";
-  }else{
-    User_PassWord.type="password";
-    Eye_Password.className="fa fa-eye";
-  }
-}
+// function ShowPassword(){
+//   let User_PassWord= document.getElementById("User_PassWord");
+//   let Eye_Password= document.getElementById("Eye_Password");
+//   if (Eye_Password.className=="fa fa-eye"){
+//     User_PassWord.type="text";
+//     Eye_Password.className="fa fa-eye-slash";
+//   }else{
+//     User_PassWord.type="password";
+//     Eye_Password.className="fa fa-eye";
+//   }
+// }
 
 // **************************MethodBrowser***********
 
@@ -345,7 +345,6 @@ function IstrueDataInform(){
   if(AmountMetod.value==""){AmountMetod.style.border="2px solid #ff0000";return false}else{AmountMetod.style.border="none";}
     return true;
 }
- 
 
 function onsubmitForm1(){
   if(IstrueDataInform()===true){
@@ -382,7 +381,6 @@ function onsubmitForm2(){
   }
 }
 
-
 function onsubmitForm3(){
   if (IsFoundMethodName(document.getElementById("MethodName"))==-1){return}
   document.getElementById("ModeP").value="3";
@@ -405,9 +403,7 @@ function onsubmitForm(Time){
   }
 } 
 
-
 // ********************SalesWi
-
 function LoadSetting(){
   DataSetting=[];
   fetch(UrlSetting)
@@ -435,6 +431,8 @@ function LoadSetting(){
 function LoadSettingName(){
   let SettingNum,SettingNote,SettingName;
   let optionClass;
+  let Ready =document.getElementById("Ready");
+  Ready.value=DataSetting[0].SettingName;
   let Tax =document.getElementById("TaxP");
   Tax.value=DataSetting[1].SettingName;
   let ShipNum =document.getElementById("ShipNum");
@@ -455,7 +453,7 @@ function LoadSettingName(){
 function OncahangeShip(Myvalue){
 let ShipAmount=document.getElementById("ShipAmount");
 ShipAmount.value=DataSetting[Myvalue - 1].SettingName;
-checkbox1.checked = false
+checkbox1.checked = true
 CaluclateTotalS();
 }
 
@@ -475,9 +473,9 @@ function OncahangeMethod(Myvalue){
 CaluclateTotalS();
 }
 
-
 function ClearItemSa(){
   let BillNumber =document.getElementById("BillNumber");
+  document.getElementById("BillNumber2").value="";
   BillNumber.value ="";
   BillNumber.style.border="none";
   let Ti =new Date().getTime().valueOf();
@@ -501,11 +499,20 @@ function ClearItemSa(){
   Tax.value=DataSetting[1].SettingName;
   let OtherCost=document.getElementById("OtherCost");
   OtherCost.value=DataSetting[4].SettingName;
+  let Ready=document.getElementById("Ready");
+  Ready.value==DataSetting[0].SettingName;
+  document.getElementById("DesCountAmount").value="";
+  document.getElementById("checkbox1").checked=false;
+  onchangecheckbox();
 }
 
 function CaluclateTotalS(){
   let Value1=0;
+  let DiCount=0;
   let AmountTotal = document.getElementById("AmountTotal");
+  let DesCountAmount = document.getElementById("DesCountAmount");
+  let DesCountSel = document.getElementById("DesCountSel");
+  let Ready = document.getElementById("Ready");
   let MethodPer=document.getElementById("MethodPer");
   let MethodVa=document.getElementById("MethodVa");
   let MethodAmount=document.getElementById("MethodAmount");
@@ -514,19 +521,36 @@ function CaluclateTotalS(){
   let ShipAmount  =document.getElementById("ShipAmount");
   let OtherCost=document.getElementById("OtherCost");
   let AmountNet=document.getElementById("AmountNet");
-  Value1 = (AmountTotal.value * MethodPer.value / 100) + MethodVa.value;
-  MethodAmount.value = (Value1 * TaxP.value / 100) + Value1;
-  Tax.value= (TaxP.value / 100 ) * AmountTotal.value ;
-  AmountNet.value=AmountTotal.value - MethodAmount.value - Tax.value - ShipAmount.value - OtherCost.value;
-}
-function onchangecheckbox(){
-  let checkbox1= document.getElementById("checkbox1");
-  if (checkbox1.checked == true){
-    document.getElementById("ShipNum").value="";
-    document.getElementById("ShipAmount").value=0;
-    CaluclateTotalS();
+  if (DesCountSel.value == "ريال"){
+    DiCount=Number(DesCountAmount.value)
   }
+  if (DesCountSel.value == "%"){
+    DiCount=(Number(DesCountAmount.value) * Number(AmountTotal.value)) / 100
+  }
+  Value1 = (Number(AmountTotal.value) * Number(MethodPer.value) / 100) + Number(MethodVa.value);
+  MethodAmount.value = (Number(Value1) * Number(TaxP.value) / 100) + Number(Value1);
+  Tax.value= (Number(TaxP.value) / 100 ) * Number(AmountTotal.value) ;
+  AmountNet.value=Number(AmountTotal.value) + Number(Ready.value) - DiCount - Number(MethodAmount.value) - Number(Tax.value) - Number(ShipAmount.value) + Number(OtherCost.value);
 }
+
+function onchangecheckbox(){
+  let ShipNum = document.getElementById("ShipNum");
+  let ShipAmount = document.getElementById("ShipAmount");
+  let checkbox1= document.getElementById("checkbox1");
+  if (checkbox1.checked == false){
+    ShipNum.value="";
+    ShipAmount.value=0;
+    ShipNum.disabled=true;
+    ShipAmount.style.backgroundColor="darkgray";
+    ShipAmount.disabled=true;
+  }else{
+    ShipNum.disabled=false;
+    ShipAmount.style.backgroundColor="";
+    ShipAmount.disabled=false;
+  }
+  CaluclateTotalS();
+}
+
 function IstrueDataInformS(){
   let BillNumber= document.getElementById("BillNumber");
   let AmountTotal = document.getElementById("AmountTotal");
@@ -538,17 +562,34 @@ function IstrueDataInformS(){
 }
 
 function onsubmitFormS1(){
+  let BillNumber= document.getElementById("BillNumber");
   if(IstrueDataInformS()===true){
+    if(IsNumberFound(BillNumber.value)!=-1){BillNumber.style.border="2px solid #ff0000";return }else{BillNumber.style.border="none";}
     document.getElementById("ModeS").value="1";
     onsubmitFormS(6000);
-    ClearItemSa();
+    ShowSalesWi();
   }
 }
 
+function IsNumberFound(MyNum){
+  if (isNaN(DataData0[0].Num)==true){return -1}
+  for (let index = 0; index < DataData0.length; index++) {
+    if(DataData0[index].BillNumber==MyNum ){
+      return index
+    }
+  }
+  return -1
+}
+
 function onsubmitFormS2(){
+  let BillNumber= document.getElementById("BillNumber");
+  let BillNumber2= document.getElementById("BillNumber2");
   if(IstrueDataInformS()===true){
-    let Indx=document.getElementById("RowS").value
-    if (Indx!=""){
+    let Indx=document.getElementById("RowS");
+    if (Indx.value!=""){
+    if(BillNumber.value!=BillNumber2.value){
+      if(IsNumberFound(BillNumber.value)!=-1){BillNumber.style.border="2px solid #ff0000";return }else{BillNumber.style.border="none";}
+    }
     document.getElementById("ModeS").value="2";
     onsubmitFormS(6000);
     }
@@ -560,7 +601,7 @@ function onsubmitFormS3(){
   if (Indx!=""){
     document.getElementById("ModeS").value="3";
     onsubmitFormS(5000);
-    ClearItemSa();
+    ShowSalesWi();
   }
 }
 
@@ -578,7 +619,6 @@ function onsubmitFormS(Time){
     }, Time);
   }
 } 
-
 
 // **************************SalesBrowser***********
 
@@ -623,10 +663,11 @@ function GetDateFromString(Str){
   return ZZ[0] + "-" + MM + "-" + DD
 }
 
-
-function LoadSalesToTable(){
+function ShowSalesBrowser(){
   let Loading =document.getElementById("LoadingSalesBrowser");
+  let Loading1 =document.getElementById("invoicedollar2");
   Loading.className="fa fa-refresh fa-spin"
+  Loading1.className="fa fa-refresh fa-spin"
   document.getElementById("bodydataS").innerHTML=""
   LoadData0();
   const myTimeout = setTimeout(function(){ 
@@ -645,12 +686,17 @@ function LoadSalesToTable(){
         DataData0[index].OtherCost,
         DataData0[index].AmountNet,
         DataData0[index].MethodNum,
-        DataData0[index].ShipNum)
+        DataData0[index].ShipNum,
+        DataData0[index].DesCountAmount,
+        DataData0[index].Ready,
+        DataData0[index].DesCountSel);
     }
   }
   AddRowTotal();
 }
   Loading.className="fa fa-refresh" ;
+  Loading1.className="fas fa-file-invoice-dollar" ;
+  ShowSelectForm("SalesBrowser");
   clearTimeout(myTimeout)
 }, 2000);
 }
@@ -713,7 +759,7 @@ function AddRowTotal() {
   cell = row.insertCell();
   };
 
-function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,Tax,ShipType,ShipAmount,OtherCost,AmountNet,MethodNum,ShipNum) {
+function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,Tax,ShipType,ShipAmount,OtherCost,AmountNet,MethodNum,ShipNum,DesCountAmount,Ready,DesCountSel) {
   let bodydata=document.getElementById("bodydataS");
   let row = bodydata.insertRow();
   row.id="S" + bodydata.childElementCount;
@@ -774,6 +820,19 @@ function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,T
   btb.style.cursor="pointer";
   btb.style.color="red";
   btb.style.width="100%";
+  cell = row.insertCell();
+  cell.id="S" + bodydata.childElementCount + "DesCountAmount";
+  cell.innerHTML = DesCountAmount;
+  cell.style.display="none";
+  cell = row.insertCell();
+  cell.id="S" + bodydata.childElementCount + "Ready";
+  cell.innerHTML = Ready;
+  cell.style.display="none";
+  cell = row.insertCell();
+  cell.id="S" + bodydata.childElementCount + "DesCountSel";
+  cell.innerHTML = DesCountSel;
+  cell.style.display="none";
+  
   };
 
   function showdatarowsS() {
@@ -782,31 +841,44 @@ function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,T
     let BillNumber=document.getElementById(indextable).children.item(1).textContent  ;
     let BillDate=document.getElementById(indextable).children.item(2).textContent  ;
     let AmountTotal=document.getElementById(indextable).children.item(3).textContent  ;
-    let MethodName=document.getElementById(indextable).children.item(4).textContent  ;
+    // let MethodName=document.getElementById(indextable).children.item(4).textContent  ;
     let MethodAmount=document.getElementById(indextable).children.item(5).textContent  ;
     let Tax=document.getElementById(indextable).children.item(6).textContent  ;
-    let ShipType=document.getElementById(indextable).children.item(7).textContent  ;
+    // let ShipType=document.getElementById(indextable).children.item(7).textContent  ;
     let ShipAmount=document.getElementById(indextable).children.item(8).textContent  ;
     let OtherCost=document.getElementById(indextable).children.item(9).textContent  ;
     let AmountNet=document.getElementById(indextable).children.item(10).textContent  ;
     let MethodNum=document.getElementById(indextable).children.item(11).textContent  ;
     let ShipNum=document.getElementById(indextable).children.item(12).textContent  ;
     let Loading=document.getElementById(indextable).children.item(13).children.item(0).children.item(0);
+    let DesCountAmount=document.getElementById(indextable).children.item(14).textContent  ;
+    let Ready=document.getElementById(indextable).children.item(15).textContent  ;
+    let DesCountSel=document.getElementById(indextable).children.item(16).textContent  ;
     LoadMethod();
     LoadSetting();
     Loading.className="fa fa-refresh fa-spin";
     const myTimeout = setTimeout(function(){ 
     document.getElementById("RowS").value= Number(Num) + 1;
     document.getElementById("BillNumber").value=BillNumber;
+    document.getElementById("BillNumber2").value=BillNumber;
     document.getElementById("BillDate").value=(BillDate);
     document.getElementById("AmountTotal").value=AmountTotal;
     document.getElementById("MethodNum").value=MethodNum;
     document.getElementById("MethodAmount").value=MethodAmount;
     document.getElementById("Tax").value=Tax;
     document.getElementById("ShipNum").value=ShipNum;
-    document.getElementById("ShipAmount").value=ShipAmount;
+    let Ship=document.getElementById("ShipAmount");
+    Ship.value=ShipAmount;
     document.getElementById("OtherCost").value=OtherCost;
     document.getElementById("AmountNet").value=AmountNet;
+    document.getElementById("Ready").value=Ready;
+    document.getElementById("DesCountAmount").value=DesCountAmount;
+    document.getElementById("DesCountSel").value=DesCountSel;
+    if (Ship.value !=0 ){
+      document.getElementById("checkbox1").checked=true;
+      onchangecheckbox();
+    }
+      OncahangeMethod(MethodNum);
       ShowSelectForm("SalesWi");
       Loading.className="fa fa-edit";
     clearTimeout(myTimeout);
@@ -841,7 +913,10 @@ function FillterSalesToTable(){
             DataData0[index].OtherCost,
             DataData0[index].AmountNet,
             DataData0[index].MethodNum,
-            DataData0[index].ShipNum)
+            DataData0[index].ShipNum,
+            DataData0[index].DesCountAmount,
+            DataData0[index].Ready,
+            DataData0[index].DesCountSel);
         }
       }else if(SeaDate.value!=""){
         if( GetDateFromString(BillDateS)==SeaDate.value){
@@ -857,7 +932,10 @@ function FillterSalesToTable(){
             DataData0[index].OtherCost,
             DataData0[index].AmountNet,
             DataData0[index].MethodNum,
-            DataData0[index].ShipNum)
+            DataData0[index].ShipNum,
+            DataData0[index].DesCountAmount,
+            DataData0[index].Ready,
+            DataData0[index].DesCountSel);
         }
       }
   }
