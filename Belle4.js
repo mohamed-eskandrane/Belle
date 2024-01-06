@@ -2,9 +2,9 @@ const sheetId = '1q3M1Etd73E7s3HaH_SZyEwBAZUCbAY_nhjmB02WDoTc';
 const Script = 'https://script.google.com/macros/s/AKfycbwFNrQ8YxErl0F_6sStT7ds4KjPWC4tunzANn6FCJr38idod5GYfYa13WtAbmOfDetudw/exec'
 const base = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?`;
 let query = encodeURIComponent('Select *');
-// let Users="Users";
-// let UrlUsers = `${base}&sheet=${Users}&tq=${query}`;
-// let DataUsers = [];
+let places="places";
+let Urlplaces = `${base}&sheet=${places}&tq=${query}`;
+let Dataplaces = [];
 let Data0="Data0";
 let UrlData0 = `${base}&sheet=${Data0}&tq=${query}`;
 let DataData0 = [];
@@ -18,16 +18,10 @@ let DataSetting = [];
 document.addEventListener('DOMContentLoaded', init)
 function init() {
   ConvertMode();
-  // LoadUsers();
   if (typeof(Storage) !== "undefined") {
-    // if( localStorage.getItem("PassWord")!=null){
-    //   document.getElementById("User_PassWord").value=localStorage.getItem("PassWord");
-    // }
-    // if( localStorage.getItem("User_Index")!=null){
       ShowSelectForm("Main");
       let Loading=document.getElementById("LoadingMain");
       Loading.className="fa fa-refresh fa-spin"
-      // document.getElementById("Myusername").value=localStorage.getItem("User_Name");
        const LoadTime=setTimeout(function(){
         Loading.className="fa fa-refresh" ;
         clearTimeout(LoadTime);
@@ -36,7 +30,6 @@ function init() {
 }
 
 function ShowSelectForm(ActiveForm){
-  // document.getElementById("loginPage").style.display="none";
   document.getElementById("Main").style.display="none";
   document.getElementById("MethodWi").style.display="none";
   document.getElementById("MethodBrowser").style.display="none";
@@ -76,9 +69,6 @@ function ShowMethodWi(){
 }, 1000);
 }
 
-
-
-
 function ShowSalesWi(){
   let Loading=document.getElementById("invoicedollar");
   let Loading1=document.getElementById("BackMain");
@@ -87,49 +77,21 @@ function ShowSalesWi(){
   LoadMethod();
   LoadSetting();
   LoadData0();
+  Loadplaces();
   const myTimeout = setTimeout(function(){ 
     Loading.className="fas fa-file-invoice-dollar";
     Loading1.className="fa fa-mail-reply";
     ClearItemSa();
     ShowSelectForm("SalesWi");
     clearTimeout(myTimeout);
-}, 2500);
+}, 3000);
 }
-
-// function SignOutUser(){
-//   localStorage.removeItem("User_Index");
-//   localStorage.removeItem("User_Name");
-//   document.getElementById('Myusername').value="";
-//   ShowSelectForm("loginPage");
-// }
 
 function GoToMain(){
     ShowSelectForm("Main");
 }
 
-// ***************Sign On**************
-// function LoadUsers(){
-//   DataUsers=[];
-//   fetch(UrlUsers)
-//   .then(res => res.text())
-//   .then(rep => {
-//       const jsonData = JSON.parse(rep.substring(47).slice(0, -2));
-//       const colzUser = [];
-//       jsonData.table.cols.forEach((heading) => {
-//           if (heading.label) {
-//               let columnUser = heading.label;
-//               colzUser.push(columnUser);
-//           }
-//       })
-//       jsonData.table.rows.forEach((rowData) => {
-//           const rowUser = {};
-//           colzUser.forEach((ele, ind) => {
-//               rowUser[ele] = (rowData.c[ind] != null) ? rowData.c[ind].v : '';
-//           })
-//           DataUsers.push(rowUser);
-//       })
-//   })
-// }
+
 
 // function IsfoundUser(TPassWord){
 //   let error_User_ID= document.getElementById("error_User_ID");
@@ -473,6 +435,64 @@ function OncahangeMethod(Myvalue){
 CaluclateTotalS();
 }
 
+function Loadplaces(){
+  Dataplaces=[];
+  fetch(Urlplaces)
+  .then(res => res.text())
+  .then(rep => {
+      const jsonplaces = JSON.parse(rep.substring(47).slice(0, -2));
+      const colzplaces = [];
+      jsonplaces.table.cols.forEach((headingplaces) => {
+          if (headingplaces.label) {
+              let columnplaces = headingplaces.label;
+              colzplaces.push(columnplaces);
+          }
+      })
+      jsonplaces.table.rows.forEach((rowplaces) => {
+          const rowplaces1 = {};
+          colzplaces.forEach((ele, ind) => {
+              rowplaces1[ele] = (rowplaces.c[ind] != null) ? rowplaces.c[ind].v : '';
+          })
+          Dataplaces.push(rowplaces1);
+      })
+      LoadplacesName();
+  })
+}
+
+function LoadplacesName(){
+  let PlacePrice,PlaceName;
+  let optionClass;
+  let PlaceName1 =document.getElementById("PlaceName");
+  PlaceName1.innerHTML="";
+  for (let index = 0; index < Dataplaces.length; index++) {
+    PlacePrice=Dataplaces[index].PlacePrice
+    PlaceName=Dataplaces[index].PlaceName
+    if(Dataplaces[index].Num!="" ){
+      optionClass=document.createElement("option");
+      optionClass.value=PlaceName;
+      optionClass.textContent=PlaceName;
+      PlaceName1.appendChild(optionClass);
+    }
+  }
+}
+
+function OncahangePlaceName(MyPlace){
+  let PlacePrice1=document.getElementById("PlacePrice");
+  let PlacePrice,PlaceName;
+  for (let index = 0; index < Dataplaces.length; index++) {
+    PlacePrice=Dataplaces[index].PlacePrice
+    PlaceName=Dataplaces[index].PlaceName
+    if(PlaceName==MyPlace ){
+      PlacePrice1.value=PlacePrice;
+      CaluclateTotalS()
+      return ;
+    }
+  }
+  PlacePrice1.value=0;
+  CaluclateTotalS()
+}
+
+
 function ClearItemSa(){
   let BillNumber =document.getElementById("BillNumber");
   document.getElementById("BillNumber2").value="";
@@ -495,6 +515,8 @@ function ClearItemSa(){
   document.getElementById("AmountNet").value ="";
   document.getElementById("MethodPer").value ="";
   document.getElementById("MethodVa").value ="";
+  document.getElementById("PlacePrice").value="";
+  document.getElementById("PlaceName").value="";
   let Tax =document.getElementById("TaxP");
   Tax.value=DataSetting[1].SettingName;
   let OtherCost=document.getElementById("OtherCost");
@@ -509,6 +531,7 @@ function ClearItemSa(){
 function CaluclateTotalS(){
   let Value1=0;
   let DiCount=0;
+  let PlacePrice = document.getElementById("PlacePrice");
   let AmountTotal = document.getElementById("AmountTotal");
   let DesCountAmount = document.getElementById("DesCountAmount");
   let DesCountSel = document.getElementById("DesCountSel");
@@ -519,6 +542,10 @@ function CaluclateTotalS(){
   let Tax = document.getElementById("Tax");
   let TaxP = document.getElementById("TaxP");
   let ShipAmount  =document.getElementById("ShipAmount");
+  let ShipAmount2=0;
+  if (ShipAmount.value !=0){
+    ShipAmount2 =Number(ShipAmount.value) + Number(PlacePrice.value)
+  }
   let OtherCost=document.getElementById("OtherCost");
   let AmountNet=document.getElementById("AmountNet");
   if (DesCountSel.value == "ريال"){
@@ -530,7 +557,8 @@ function CaluclateTotalS(){
   Value1 = (Number(AmountTotal.value) * Number(MethodPer.value) / 100) + Number(MethodVa.value);
   MethodAmount.value = (Number(Value1) * Number(TaxP.value) / 100) + Number(Value1);
   Tax.value= (Number(TaxP.value) / 100 ) * Number(AmountTotal.value) ;
-  AmountNet.value=Number(AmountTotal.value) + Number(Ready.value) - DiCount - Number(MethodAmount.value) - Number(Tax.value) - Number(ShipAmount.value) + Number(OtherCost.value);
+  AmountNet.value=Number(AmountTotal.value) - Number(Ready.value) - DiCount - Number(MethodAmount.value) - Number(Tax.value) - ShipAmount2 - Number(OtherCost.value) - Number(PlacePrice.value);
+  AmountNet.value=GetFormat(String(AmountNet.value));
 }
 
 function onchangecheckbox(){
@@ -689,7 +717,10 @@ function ShowSalesBrowser(){
         DataData0[index].ShipNum,
         DataData0[index].DesCountAmount,
         DataData0[index].Ready,
-        DataData0[index].DesCountSel);
+        DataData0[index].DesCountSel,
+        DataData0[index].PlaceName,
+        DataData0[index].PlacePrice
+        );
     }
   }
   AddRowTotal();
@@ -759,7 +790,7 @@ function AddRowTotal() {
   cell = row.insertCell();
   };
 
-function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,Tax,ShipType,ShipAmount,OtherCost,AmountNet,MethodNum,ShipNum,DesCountAmount,Ready,DesCountSel) {
+function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,Tax,ShipType,ShipAmount,OtherCost,AmountNet,MethodNum,ShipNum,DesCountAmount,Ready,DesCountSel,PlaceName,PlacePrice) {
   let bodydata=document.getElementById("bodydataS");
   let row = bodydata.insertRow();
   row.id="S" + bodydata.childElementCount;
@@ -832,7 +863,14 @@ function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,T
   cell.id="S" + bodydata.childElementCount + "DesCountSel";
   cell.innerHTML = DesCountSel;
   cell.style.display="none";
-  
+  cell = row.insertCell();
+  cell.id="S" + bodydata.childElementCount + "PlaceName";
+  cell.innerHTML = PlaceName;
+  cell.style.display="none";
+  cell = row.insertCell();
+  cell.id="S" + bodydata.childElementCount + "PlacePrice";
+  cell.innerHTML = PlacePrice;
+  cell.style.display="none";
   };
 
   function showdatarowsS() {
@@ -854,6 +892,8 @@ function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,T
     let DesCountAmount=document.getElementById(indextable).children.item(14).textContent  ;
     let Ready=document.getElementById(indextable).children.item(15).textContent  ;
     let DesCountSel=document.getElementById(indextable).children.item(16).textContent  ;
+    let PlaceName=document.getElementById(indextable).children.item(17).textContent  ;
+    let PlacePrice=document.getElementById(indextable).children.item(18).textContent  ;
     LoadMethod();
     LoadSetting();
     Loading.className="fa fa-refresh fa-spin";
@@ -878,6 +918,8 @@ function AddRowPrS(Num,BillNumber,BillDate,AmountTotal,MethodName,MethodAmount,T
       document.getElementById("checkbox1").checked=true;
       onchangecheckbox();
     }
+    document.getElementById("PlaceName").value=PlaceName;
+    document.getElementById("PlacePrice").value=PlacePrice;
       OncahangeMethod(MethodNum);
       ShowSelectForm("SalesWi");
       Loading.className="fa fa-edit";
@@ -916,7 +958,10 @@ function FillterSalesToTable(){
             DataData0[index].ShipNum,
             DataData0[index].DesCountAmount,
             DataData0[index].Ready,
-            DataData0[index].DesCountSel);
+            DataData0[index].DesCountSel,
+            DataData0[index].PlaceName,
+            DataData0[index].PlacePrice
+            );
         }
       }else if(SeaDate.value!=""){
         if( GetDateFromString(BillDateS)==SeaDate.value){
@@ -935,7 +980,10 @@ function FillterSalesToTable(){
             DataData0[index].ShipNum,
             DataData0[index].DesCountAmount,
             DataData0[index].Ready,
-            DataData0[index].DesCountSel);
+            DataData0[index].DesCountSel,
+            DataData0[index].PlaceName,
+            DataData0[index].PlacePrice
+            );
         }
       }
   }
