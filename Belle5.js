@@ -544,7 +544,7 @@ function CaluclateTotalS(){
   let ShipAmount  =document.getElementById("ShipAmount");
   let ShipAmount2=0;
   if (ShipAmount.value !=0){
-    ShipAmount2 =Number(ShipAmount.value) + Number(PlacePrice.value)
+    ShipAmount2 =Number(ShipAmount.value) 
   }
   let OtherCost=document.getElementById("OtherCost");
   let AmountNet=document.getElementById("AmountNet");
